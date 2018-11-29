@@ -1,3 +1,5 @@
+`include "defines.v"
+
 module id_ex (
     input   wire                clk,
     input   wire                rst,

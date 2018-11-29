@@ -1,3 +1,5 @@
+`include "defines.v"
+
 module id (
     input   wire                rst,
     input   wire[`InstAddrBus]  pc,

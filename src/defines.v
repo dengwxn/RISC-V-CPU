@@ -1,3 +1,6 @@
+`ifndef DEFINES_V
+`define DEFINES_V
+
 /*
 	Instruction opcode
 */
@@ -9,6 +12,18 @@
 
 // OP_IMM
 `define FUNCT3_ORI  3'b110
+
+/*
+	AluSel
+*/
+`define EXE_RES_NOP		0
+`define EXE_RES_LOGIC	1
+
+/*
+	AluOp
+*/
+`define EXE_NOP_OP		0
+`define EXE_OR_OP		1
 
 /*
   	Hardware Properties
