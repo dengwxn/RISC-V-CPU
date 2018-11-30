@@ -21,31 +21,42 @@ module id (
     output  reg[`RegBus]        opv2
 );
 
-    wire[6 : 0] opcode = inst[6 : 0];
-    wire[2 : 0] funct3 = inst[14 : 12];
-    wire[6 : 0] funct7 = inst[31 : 25];
-    wire[11 : 0] I_imm = inst[31 : 20];
-    wire[19 : 0] U_imm = inst[31 : 12];
-    wire[11 : 0] S_imm = {inst[31 : 25], inst[11 : 7]};
+    wire[6 : 0] opcode;
+    wire[2 : 0] funct3;
+    wire[6 : 0] funct7;
+    wire[11 : 0] I_imm;
+    wire[19 : 0] U_imm;
+    wire[11 : 0] S_imm;
+    wire[`RegBus] rd;
+    wire[`RegBus] rs;
+    wire[`RegBus] rt;
+
+
+    assign opcode = inst[6 : 0];
+    assign funct3 = inst[14 : 12];
+    assign funct7 = inst[31 : 25];
+    assign I_imm = inst[31 : 20];
+    assign U_imm = inst[31 : 12];
+    assign S_imm = {inst[31 : 25], inst[11 : 7]};
+    assign rd = inst[11 : 7];
+    assign rs = inst[19 : 15];
+    assign rt = inst[24 : 20];
+
     reg[31 : 0] imm1, imm2;
     reg instvalid;
 
-    wire[`RegBus] rd = inst[11 : 7];
-    wire[`RegBus] rs = inst[19 : 15];
-    wire[`RegBus] rt = inst[24 : 20];
-
     `define SET_INST(_alusel, _aluop, _instvalid, _re1, _raddr1, _re2, _raddr2, _imm1, _imm2, _we, _waddr) \
-        alusel = _alusel; \
-        aluop = _aluop; \
-        instvalid = _instvalid; \
-        re1 = _re1; \
-        raddr1 = _raddr1;
-        re2 = _re2; \
-        raddr2 = _raddr2; \
-        imm1 = _imm1; \
-        imm2 = _imm2; \
-        we = _we; \
-        waddr = _waddr;
+        alusel <= _alusel; \
+        aluop <= _aluop; \
+        instvalid <= _instvalid; \
+        re1 <= _re1; \
+        raddr1 <= _raddr1;
+        re2 <= _re2; \
+        raddr2 <= _raddr2; \
+        imm1 <= _imm1; \
+        imm2 <= _imm2; \
+        we <= _we; \
+        waddr <= _waddr;
 
     always @ (*) begin
         if (rst) begin
@@ -70,13 +81,13 @@ module id (
 
     `define SET_OPV(opv, re, rdata, imm) \
         if (rst) begin \
-            opv = 0; \
+            opv <= 0; \
         end else if (re) begin \
-            opv = rdata; \
+            opv <= rdata; \
         end else if (!re) begin \
-            opv = imm; \
+            opv <= imm; \
         end else begin \
-            opv = 0;
+            opv <= 0;
         end
 
     always @ (*) begin

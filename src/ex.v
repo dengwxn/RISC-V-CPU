@@ -11,22 +11,35 @@ module ex (
 
     output  reg[`RegAddrBus]    waddr_o,
     output  reg                 we_o,
-    output  reg                 wdata,
+    output  reg[`RegBus]        wdata,
 );
 
     reg[`RegBus] logic_out;
 
     always @ (*) begin
         if (rst || alusel != `EXE_RES_LOGIC) begin
-            logic_out = 0;
+            logic_out <= 0;
         end else begin
             case (aluop)
                 `EXE_OR_OP : begin
-                    logic_out = opv1 | opv2;
+                    logic_out <= opv1 | opv2;
                 end
                 default : begin
-                    logic_out = 0;
+                    logic_out <= 0;
                 end
             endcase
         end
+    end
+
+    always @ (*) begin
+        waddr_o <= waddr_i;
+        we_o <= we_i;
+        case (alusel)
+            `EXE_RES_LOGIC : begin
+                wdata <= logic_out;
+            end
+            default : begin
+                wdata <= 0;
+            end
+        endcase
     end
