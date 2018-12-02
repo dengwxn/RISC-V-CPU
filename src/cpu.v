@@ -109,7 +109,15 @@ module cpu(
 		.we(id_we),
 		.waddr(id_waddr),
 		.opv1(id_opv1),
-		.opv2(id_opv2)
+		.opv2(id_opv2),
+
+		.ex_we(ex_waddr_o),
+		.ex_waddr(ex_we_o),
+		.ex_wdata(ex_wdata),
+
+		.mem_we(mem_waddr_o),
+		.mem_waddr(mem_we_o),
+		.mem_wdata(mem_wdata_o)
 	);
 
 	// Regfile

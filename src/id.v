@@ -18,7 +18,15 @@ module id (
     output  reg                 we,
     output  reg[`RegAddrBus]    waddr,
     output  reg[`RegBus]        opv1,
-    output  reg[`RegBus]        opv2
+    output  reg[`RegBus]        opv2,
+
+    input   wire                ex_we,
+    input   wire[`RegAddrBus]   ex_waddr,
+    input   wire[`RegBus]       ex_wdata,
+
+    input   wire                mem_we,
+    input   wire[`RegAddrBus]   mem_waddr,
+    input   wire[`RegBus]       mem_wdata
 );
 
     wire[6 : 0] opcode;
@@ -65,22 +73,101 @@ module id (
             case (opcode)
                 `OP_OP_IMM : begin
                     case (funct3)
+                        `FUNCT3_ADDI : begin
+                            `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
+                        end
+                        `FUNCT3_SLLI : begin
+                            `SET_INST(`EXE_RES_SHIFT, `EXE_SLL_OP, 1, 1, rs, 0, 0, 0, rt, 1, rd)
+                        end
+                        `FUNCT3_SLTI : begin
+                            `SET_INST(`EXE_RES_ARITH, `EXE_SLT_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
+                        end
+                        `FUNCT3_SLTIU : begin
+                            `SET_INST(`EXE_RES_ARITH, `EXE_SLTU_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
+                        end
+                        `FUNCT3_XORI : begin
+                            `SET_INST(`EXE_RES_LOGIC, `EXE_XOR_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
+                        end
+                        `FUNCT3_SRLI_SRAI : begin
+                            case (funct7)
+                                `FUNCT7_SRLI : begin
+                                    `SET_INST(`EXE_RES_SHIFT, `EXE_SRL_OP, 1, 1, rs, 0, 0, 0, rt, 1, rd)
+                                end
+                                `FUNCT7_SRAI : begin
+                                    `SET_INST(`EXE_RES_SHIFT, `EXE_SRA_OP, 1, 1, rs, 0, 0, 0, rt, 1, rd)
+                                end
+                            endcase
+                        end
                         `FUNCT3_ORI : begin
                             `SET_INST(`EXE_RES_LOGIC, `EXE_OR_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
+                        end
+                        `FUNCT3_ANDI : begin
+                            `SET_INST(`EXE_RES_LOGIC, `EXE_AND_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
                         end
                         default : begin
                         end
                     endcase
                 end
+                `OP_OP : begin
+                    case (funct3) 
+                        `FUNCT3_ADD_SUB : begin
+                            case (funct7) 
+                                `FUNCT7_ADD : begin
+                                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                                end
+                                `FUNCT7_SUB : begin
+                                    `SET_INST(`EXE_RES_ARITH, `EXE_SUB_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                                end
+                                default : begin
+                                end
+                            endcase
+                        end
+                        `FUNCT3_SLT : begin
+                            `SET_INST(`EXE_RES_ARITH, `EXE_SLT_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                        end
+                        `FUNCT3_SLTU : begin
+                            `SET_INST(`EXE_RES_ARITH, `EXE_SLTU_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                        end
+                        `FUNCT3_XOR : begin
+                            `SET_INST(`EXE_RES_LOGIC, `EXE_XOR_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                        end
+                        `FUNCT3_SRL_SRA : begin
+                            case (funct7)
+                                `FUNCT7_SRL : begin
+                                    `SET_INST(`EXE_RES_SHIFT, `EXE_SRL_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                                end
+                                `FUNCT7_SRA : begin
+                                    `SET_INST(`EXE_RES_SHIFT, `EXE_SRA_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                                end
+                            endcase
+                        end
+                        `FUNCT3_OR : begin
+                            `SET_INST(`EXE_RES_LOGIC, `EXE_OR_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                        end
+                        `FUNCT3_AND : begin
+                            `SET_INST(`EXE_RES_LOGIC, `EXE_AND_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                        end
+                        default : begin
+                        end
+                    endcase
+                end
+                /*
+                `OP_LUI : begin
+                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
+                end */
                 default : begin
                 end
             endcase
         end
     end
 
-    `define SET_OPV(opv, re, rdata, imm) \
+    `define SET_OPV(opv, re, raddr, rdata, imm) \
         if (rst) begin \
             opv = 0; \
+        end else if (re && ex_we && ex_waddr == raddr) begin \
+            opv = ex_wdata; \ 
+        end else if (re && mem_we && mem_waddr == raddr) begin \
+            opv = mem_wdata; \ 
         end else if (re) begin \
             opv = rdata; \
         end else if (!re) begin \
@@ -90,11 +177,11 @@ module id (
         end
 
     always @ (*) begin
-        `SET_OPV(opv1, re1, rdata1, imm1)
+        `SET_OPV(opv1, re1, raddr1, rdata1, imm1)
     end
 
     always @ (*) begin
-        `SET_OPV(opv2, re2, rdata2, imm2)
+        `SET_OPV(opv2, re2, raddr2, rdata2, imm2)
     end
 
 endmodule
