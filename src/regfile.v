@@ -29,21 +29,21 @@ module regfile (
 
     always @ (*) begin
         if (rst || !re1 || raddr1 == 0) begin
-            rdata1 <= 0;
+            rdata1 = 0;
         end else if (we && raddr1 == waddr) begin
-            rdata1 <= wdata;
+            rdata1 = wdata;
         end else begin 
-            rdata1 <= regs[raddr1];
+            rdata1 = regs[raddr1];
         end
     end
 
     always @ (*) begin
         if (rst || !re2 || raddr2 == 0) begin
-            rdata1 <= 0;
+            rdata2 = 0;
         end else if (we && raddr2 == waddr) begin
-            rdata1 <= wdata;
+            rdata2 = wdata;
         end else begin 
-            rdata1 <= regs[raddr2];
+            rdata2 = regs[raddr2];
         end
     end
 

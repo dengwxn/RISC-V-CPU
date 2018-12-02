@@ -76,6 +76,7 @@ module cpu(
 		.ce(if_ce)
 	);
 
+	// read instruction
 	assign mem_wr = 0;
 	assign mem_a = pc;
 

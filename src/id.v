@@ -31,7 +31,6 @@ module id (
     wire[`RegBus] rs;
     wire[`RegBus] rt;
 
-
     assign opcode = inst[6 : 0];
     assign funct3 = inst[14 : 12];
     assign funct7 = inst[31 : 25];
@@ -46,17 +45,17 @@ module id (
     reg instvalid;
 
     `define SET_INST(_alusel, _aluop, _instvalid, _re1, _raddr1, _re2, _raddr2, _imm1, _imm2, _we, _waddr) \
-        alusel <= _alusel; \
-        aluop <= _aluop; \
-        instvalid <= _instvalid; \
-        re1 <= _re1; \
-        raddr1 <= _raddr1;
-        re2 <= _re2; \
-        raddr2 <= _raddr2; \
-        imm1 <= _imm1; \
-        imm2 <= _imm2; \
-        we <= _we; \
-        waddr <= _waddr;
+        alusel = _alusel; \
+        aluop = _aluop; \
+        instvalid = _instvalid; \
+        re1 = _re1; \
+        raddr1 = _raddr1; \
+        re2 = _re2; \
+        raddr2 = _raddr2; \
+        imm1 = _imm1; \
+        imm2 = _imm2; \
+        we = _we; \
+        waddr = _waddr;
 
     always @ (*) begin
         if (rst) begin
@@ -67,7 +66,7 @@ module id (
                 `OP_OP_IMM : begin
                     case (funct3)
                         `FUNCT3_ORI : begin
-                            `SET_INST(`EXE_RES_LOGIC, `EXE_OR_OP, 1, 1, rs, 0, 0, 1, rd, 0, {20{I_imm[11]}, I_imm})
+                            `SET_INST(`EXE_RES_LOGIC, `EXE_OR_OP, 1, 1, rs, 0, 0, 0, {{20{I_imm[11]}}, I_imm}, 1, rd)
                         end
                         default : begin
                         end
@@ -81,13 +80,13 @@ module id (
 
     `define SET_OPV(opv, re, rdata, imm) \
         if (rst) begin \
-            opv <= 0; \
+            opv = 0; \
         end else if (re) begin \
-            opv <= rdata; \
+            opv = rdata; \
         end else if (!re) begin \
-            opv <= imm; \
+            opv = imm; \
         end else begin \
-            opv <= 0;
+            opv = 0; \
         end
 
     always @ (*) begin
