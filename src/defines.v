@@ -7,6 +7,7 @@
 `define OP_OP_IMM	7'b0010011
 `define OP_OP		7'b0110011
 `define OP_LUI		7'b0110111
+`define OP_AUIPC	7'b0010111
 
 /*
   	Instruction funct3

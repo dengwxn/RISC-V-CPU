@@ -151,10 +151,12 @@ module id (
                         end
                     endcase
                 end
-                /*
                 `OP_LUI : begin
-                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd)
-                end */
+                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, 0, {{U_imm, 12{0}}, 1, rd)
+                end 
+                `OP_AUIPC : begin
+                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, pc, {{U_imm, 12{0}}, 1, rd)
+                end
                 default : begin
                 end
             endcase
