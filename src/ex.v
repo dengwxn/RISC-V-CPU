@@ -68,14 +68,14 @@ module ex (
             shift_out = 0;
         end else begin
             case (aluop) 
-                `EXE_SLI_OP : begin
+                `EXE_SLL_OP : begin
                     shift_out = opv1 << opv2[4 : 0];
                 end
                 `EXE_SRL_OP : begin
                     shift_out = opv1 >> opv2[4 : 0];
                 end
                 `EXE_SRA_OP : begin
-                    shift_out = {(opv2){opv1[31]}, (opv1 >> opv2)[(31 - opv2) : 0]};
+                    shift_out = ({32{opv1[31]}} << (6'd32 - {1'b0, opv2[4 : 0]})) | (opv1 >> opv2[4 : 0]);
                 end
                 default : begin
                     shift_out = 0;

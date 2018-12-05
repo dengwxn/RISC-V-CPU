@@ -152,10 +152,10 @@ module id (
                     endcase
                 end
                 `OP_LUI : begin
-                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, 0, {{U_imm, 12{0}}, 1, rd)
+                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, 0, {U_imm, 12'b0}, 1, rd)
                 end 
                 `OP_AUIPC : begin
-                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, pc, {{U_imm, 12{0}}, 1, rd)
+                    `SET_INST(`EXE_RES_ARITH, `EXE_ADD_OP, 1, 0, 0, 0, 0, pc, {U_imm, 12'b0}, 1, rd)
                 end
                 default : begin
                 end
@@ -167,9 +167,9 @@ module id (
         if (rst) begin \
             opv = 0; \
         end else if (re && ex_we && ex_waddr == raddr) begin \
-            opv = ex_wdata; \ 
+            opv = ex_wdata; \
         end else if (re && mem_we && mem_waddr == raddr) begin \
-            opv = mem_wdata; \ 
+            opv = mem_wdata; \
         end else if (re) begin \
             opv = rdata; \
         end else if (!re) begin \
