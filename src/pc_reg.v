@@ -3,6 +3,7 @@
 module pc_reg (
     input   wire                clk,
     input   wire                rst,
+    input   wire                stall,
     output  reg[`InstAddrBus]   pc,
     output  reg                 ce
 );
@@ -18,7 +19,7 @@ module pc_reg (
     always @ (posedge clk) begin
         if (rst) begin
             pc <= 0;
-        end else begin
+        end if (!stall[0]) else begin
             pc <= pc + 4;
         end
     end

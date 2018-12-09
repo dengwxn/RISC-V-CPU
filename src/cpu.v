@@ -16,11 +16,15 @@ module cpu(
 	output wire [31:0] 	dbgreg_dout	// cpu register output (debugging demo)
 );
 
-	// IF
+	// PC -- IF
+	wire[`InstAddrBus]	if_pc_i;
 	wire				if_ce;
 
+	// IF -- IF/ID
+	wire[`InstAddrBus]	if_pc_o;
+	wire[`InstBus]		if_inst;
+
 	// IF/ID -- ID
-	wire[`InstAddrBus]	pc;
 	wire[`InstAddrBus]	id_pc;
 	wire[`InstBus]		id_inst;
 
@@ -68,24 +72,73 @@ module cpu(
 	wire				wb_we;
 	wire[`RegBus]		wb_wdata;
 
+	// STALL
+	wire[4 : 0]			stall;
+	wire				if_stallreq;
+
+	// IF -- MEM_CTRL
+	wire[`MemAddrBus]	if_raddr;
+
+	// MEM_CTRL(output)
+	wire[`MemBus]		mem_ctrl_data_o;
+	wire				if_mem_ctrl_done;
+
+	// mem_ctrl
+	mem_ctrl mem_ctrl0(
+		.clk(clk_in),
+		.rst(rst_in),
+
+		.if_raddr(if_raddr),
+		.data_o(mem_ctrl_data_o),
+		.if_mem_ctrl_done(if_mem_ctrl_done),
+
+		.mem_ctrl_wr(mem_wr),
+		.addr(mem_wr),
+		.data_i(mem_dout)
+	);
+
+	// stall
+	stall stall0 (
+		.rst(rst_in),
+		.if_stallreq(if_stallreq),
+		.stall(stall)
+	);
+
 	// pc_reg
 	pc_reg pc_reg0 (
 		.clk(clk_in),
 		.rst(rst_in),
-		.pc(pc),
+
+		.pc(if_pc_i),
 		.ce(if_ce)
 	);
 
-	// read instruction
-	assign mem_wr = 0;
-	assign mem_a = pc;
+	// if
+	if if0 (
+		.clk(clk_in),
+		.rst(rst_in),
+
+		.pc_i(if_pc_i),
+		.ce(if_ce),
+		.stall(stall),
+
+		.pc_o(if_pc_o),
+		.inst(if_inst),
+		.if_stallreq(if_stallreq),
+
+		.raddr(if_raddr),
+		.if_mem_ctrl_done(if_mem_ctrl_done),
+		.rdata(mem_ctrl_data_o)
+	);
 
 	// IF/ID
 	if_id if_id0 (
 		.clk(clk_in),
 		.rst(rst_in),
-		.if_pc(pc),
-		.if_inst(mem_dout),
+
+		.if_pc(if_pc_o),
+		.if_inst(if_inst),
+
 		.id_pc(id_pc),
 		.id_inst(id_inst)
 	);

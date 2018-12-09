@@ -79,11 +79,21 @@
   	Hardware Properties
 */
 
+// Memory
+`define MemAddrBus		31:0
+`define MemBus			7:0
+
 // Instruction Memory
 `define InstAddrBus     31:0
 `define InstBus         31:0
 `define InstMemNum      131072
 `define InstMemNumLog2  17
+
+// Data Memory
+`define DataAddrBus     31:0
+`define DataBus         31:0
+`define DataMemNum      131072
+`define DataMemNumLog2  17
 
 // Register File
 `define RegAddrBus  4:0
