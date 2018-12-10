@@ -1,6 +1,6 @@
 `include "defines.v"
 
-module if (
+module stage_if (
     input   wire                clk,
     input   wire                rst,
 
@@ -17,12 +17,8 @@ module if (
     input   wire[`InstBus]      rdata
 );
 
-    // need modification for competing with LOAD/STORE
     always @ (*) begin
         raddr = pc_i;
-    end
-
-    always @ (*) begin
         if (rst) begin
             pc_o = 0;
             inst = 0;
@@ -36,5 +32,6 @@ module if (
             inst = 0;
             if_stallreq = 1;    
         end
+    end
 
 endmodule

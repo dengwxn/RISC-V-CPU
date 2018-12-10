@@ -76,11 +76,11 @@ module cpu(
 	wire[4 : 0]			stall;
 	wire				if_stallreq;
 
-	// IF -- MEM_CTRL
+	// * -- MEM_CTRL
 	wire[`MemAddrBus]	if_raddr;
 
-	// MEM_CTRL(output)
-	wire[`MemBus]		mem_ctrl_data_o;
+	// MEM_CTRL -- *
+	wire[`MemBus]		mem_ctrl_rdata_o;
 	wire				if_mem_ctrl_done;
 
 	// mem_ctrl
@@ -89,12 +89,12 @@ module cpu(
 		.rst(rst_in),
 
 		.if_raddr(if_raddr),
-		.data_o(mem_ctrl_data_o),
+		.rdata_o(mem_ctrl_rdata_o),
 		.if_mem_ctrl_done(if_mem_ctrl_done),
 
 		.mem_ctrl_wr(mem_wr),
-		.addr(mem_wr),
-		.data_i(mem_dout)
+		.addr(mem_a),
+		.rdata(mem_dout)
 	);
 
 	// stall
@@ -114,7 +114,7 @@ module cpu(
 	);
 
 	// if
-	if if0 (
+	stage_if if0 (
 		.clk(clk_in),
 		.rst(rst_in),
 
@@ -128,7 +128,7 @@ module cpu(
 
 		.raddr(if_raddr),
 		.if_mem_ctrl_done(if_mem_ctrl_done),
-		.rdata(mem_ctrl_data_o)
+		.rdata(mem_ctrl_rdata_o)
 	);
 
 	// IF/ID
