@@ -8,6 +8,9 @@
 `define OP_OP		7'b0110011
 `define OP_LUI		7'b0110111
 `define OP_AUIPC	7'b0010111
+`define OP_JAL		7'b1101111
+`define OP_JALR		7'b1100111 
+`define OP_BRANCH	7'b1100011
 
 /*
   	Instruction funct3
@@ -33,6 +36,14 @@
 `define FUNCT3_OR  		3'b110
 `define FUNCT3_AND  	3'b111
 
+// BRANCH
+`define FUNCT3_BEQ		3'b000
+`define FUNCT3_BNE		3'b001
+`define FUNCT3_BLT		3'b100
+`define FUNCT3_BGE		3'b101
+`define FUNCT3_BLTU		3'b110
+`define FUNCT3_BGEU		3'b111
+
 /*
 	Instruction funct7
 */
@@ -56,6 +67,7 @@
 `define EXE_RES_LOGIC	1
 `define EXE_RES_ARITH	2
 `define EXE_RES_SHIFT	3
+`define EXE_RES_BRANCH	4
 
 /*
 	AluOp
@@ -74,6 +86,16 @@
 `define EXE_SLL_OP		8
 `define EXE_SRL_OP		9
 `define EXE_SRA_OP		10
+
+`define EXE_JAL_OP		11
+`define EXE_JALR_OP		12
+
+`define EXE_BEQ_OP		13
+`define EXE_BNE_OP		14
+`define EXE_BLT_OP		15	
+`define EXE_BGE_OP		16
+`define EXE_BLTU_OP		17
+`define EXE_BGEU_OP		18
 
 /*
   	Hardware Properties

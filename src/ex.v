@@ -9,6 +9,8 @@ module ex (
     input   wire[`RegAddrBus]   waddr_i,
     input   wire                we_i,
 
+    input   wire[`InstAddrBus]  link_addr,
+
     output  reg[`RegAddrBus]    waddr_o,
     output  reg                 we_o,
     output  reg[`RegBus]        wdata
@@ -96,6 +98,9 @@ module ex (
             end
             `EXE_RES_SHIFT : begin
                 wdata = shift_out;
+            end
+            `EXE_RES_BRANCH : begin
+                wdata = link_addr;
             end
             default : begin
                 wdata = 0;
