@@ -11,6 +11,8 @@
 `define OP_JAL		7'b1101111
 `define OP_JALR		7'b1100111 
 `define OP_BRANCH	7'b1100011
+`define OP_LOAD		7'b0000011
+`define OP_SOTRE	7'b0100011
 
 /*
   	Instruction funct3
@@ -44,6 +46,18 @@
 `define FUNCT3_BLTU		3'b110
 `define FUNCT3_BGEU		3'b111
 
+// LOAD
+`define FUNCT3_LB		3'b000
+`define FUNCT3_LH		3'b001
+`define FUNCT3_LW		3'b010
+`define FUNCT3_LBU		3'b100
+`define FUNCT3_LHU		3'b101
+
+// STORE
+`define FUNCT3_SB		3'b000
+`define FUNCT3_SH		3'b001
+`define FUNCT3_SW		3'b010
+
 /*
 	Instruction funct7
 */
@@ -63,11 +77,12 @@
 /*
 	AluSel
 */
-`define EXE_RES_NOP		0
-`define EXE_RES_LOGIC	1
-`define EXE_RES_ARITH	2
-`define EXE_RES_SHIFT	3
-`define EXE_RES_BRANCH	4
+`define EXE_RES_NOP			0
+`define EXE_RES_LOGIC		1
+`define EXE_RES_ARITH		2
+`define EXE_RES_SHIFT		3
+`define EXE_RES_BRANCH		4
+`define EXE_RES_LOAD_STORE	5
 
 /*
 	AluOp
@@ -96,6 +111,16 @@
 `define EXE_BGE_OP		16
 `define EXE_BLTU_OP		17
 `define EXE_BGEU_OP		18
+
+`define EXE_LB_OP 		19
+`define EXE_LH_OP 		20
+`define EXE_LW_OP 		21
+`define EXE_LBU_OP 		22
+`define EXE_LHU_OP 		23
+
+`define EXE_SB_OP 		24
+`define EXE_SH_OP 		25
+`define EXE_SW_OP 		26
 
 /*
   	Hardware Properties

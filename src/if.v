@@ -12,7 +12,7 @@ module stage_if (
     output  reg                 inst,
     output  reg                 if_stallreq,
 
-    output  reg                 raddr,
+    output  wire                raddr,
     input   wire                if_mem_ctrl_done,
     input   wire[`InstBus]      rdata,
 
@@ -20,8 +20,9 @@ module stage_if (
     output  reg                 cancel
 );
 
+    assign raddr = pc_i;
+
     always @ (*) begin
-        raddr = pc_i;
         cancel = 0;
         if (rst) begin
             pc_o = 0;

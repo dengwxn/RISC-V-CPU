@@ -13,12 +13,21 @@ module ex (
 
     output  reg[`RegAddrBus]    waddr_o,
     output  reg                 we_o,
-    output  reg[`RegBus]        wdata
+    output  reg[`RegBus]        wdata,
+
+    input   wire[`RegBus]       mem_offset,
+    output  reg[`MemAddrBus]    mem_addr,
+    output  wire[`AluOpBus]     mem_aluop,
+    output  wire[`RegBus]       rt_data
 );
+
+    assign mem_aluop = aluop;
+    assign rt_data = opv2;
 
     reg[`RegBus] logic_out;
     reg[`RegBus] arith_out;
     reg[`RegBus] shift_out;
+    reg[`RegBus] mem_out;
 
     always @ (*) begin
         if (rst || alusel != `EXE_RES_LOGIC) begin
@@ -87,8 +96,17 @@ module ex (
     end
 
     always @ (*) begin
+        if (rst || alusel != `EXE_RES_LOAD_STORE) begin
+            mem_out = 0;
+        end else begin
+            mem_out = opv1 + mem_offset;
+        end
+    end
+
+    always @ (*) begin
         waddr_o = waddr_i;
         we_o = we_i;
+        mem_addr = 0;
         case (alusel)
             `EXE_RES_LOGIC : begin
                 wdata = logic_out;
@@ -101,6 +119,10 @@ module ex (
             end
             `EXE_RES_BRANCH : begin
                 wdata = link_addr;
+            end
+            `EXE_RES_LOAD_STORE : begin
+                wdata = 0;
+                mem_addr = mem_out;
             end
             default : begin
                 wdata = 0;
