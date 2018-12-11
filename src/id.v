@@ -60,9 +60,9 @@ module id (
     wire[31 : 0] rdata1_plus_I_imm;
     wire[31 : 0] pc_plus_4;
 
-    assign pc_plus_J_imm = pc + {12{inst[31]}, inst[19 : 12], inst[20], inst[30 : 21], 1'b0};
-    assign pc_plus_B_imm = pc + {20{inst[31]}, inst[7], inst[30 : 25], inst[11 : 8], 1'b0};
-    assign rdata1_plus_I_imm = rdata1 + {20{I_imm[11]}, I_imm};
+    assign pc_plus_J_imm = pc + {{12{inst[31]}}, inst[19 : 12], inst[20], inst[30 : 21], 1'b0};
+    assign pc_plus_B_imm = pc + {{20{inst[31]}}, inst[7], inst[30 : 25], inst[11 : 8], 1'b0};
+    assign rdata1_plus_I_imm = rdata1 + {{20{I_imm[11]}}, I_imm};
     assign pc_plus_4 = pc + 4;
 
     wire br_eq;
