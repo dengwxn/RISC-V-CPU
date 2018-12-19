@@ -10,6 +10,7 @@ module mem_ctrl (
 
     output  reg                 mem_ctrl_wr,
     output  reg[`MemAddrBus]    addr,
+    output  reg[`MemBus]        wdata,
     input   wire[`MemBus]       rdata,
 
     input   wire                if_cancel,
@@ -17,98 +18,91 @@ module mem_ctrl (
     input   wire[`MemAddrBus]   mem_addr,
     input   wire[`AluOpBus]     mem_aluop,
     input   wire[`RegBus]       rt_data,
-    output  wire                mem_mem_ctrl_done
+    output  reg                 load_store_mem_ctrl_done
 );
 
-    reg[6 : 0] status;
+    reg[5 : 0] status;
 
-    `define INIT(_addr) \
-        _addr <= _addr;
-    
-    `define PROCEED() \
-        _addr <= _addr + 1;
-
-    `define UPDATE(_status, _if_mem_ctrl_done, _mem_ctrl_wr) \
+    `define START(_status, _addr, _mem_ctrl_wr, _wdata) \
         status <= _status; \
-        if_mem_ctrl_done <= _if_mem_ctrl_done; \
-        mem_ctrl_wr <= _mem_ctrl_wr;
+        addr <= _addr; \
+        mem_ctrl_wr <= _mem_ctrl_wr; \
+        wdata <= _wdata;
 
-    `define DATA_EXTRACT(_sel, _rdata) \
-        rdata_o[_sel] <= _rdata;
+    `define RESET() \
+        status <= 0;
+        if_mem_ctrl_done <= 0;
+        load_store_mem_ctrl_done <= 0;
 
     `define REDIRECT(_redirect_status) \
-        if (_redirect_status == `INIT_STATUS) begin \
+        if (_redirect_status == `IF_DONE_STATUS) begin \
+            if_mem_ctrl_done <= 1; \
+        end else if (_redirect_status == `LOAD_STORE_DONE_STATUS) begin \
+            load_store_mem_ctrl_done <= 1; \
+        end \
+        if (_redirect_status == `START_STATUS) begin \
             case (mem_aluop) \
                 `EXE_LB_OP or `EXE_LH_OP or `EXE_LW_OP or `EXE_LBU_OP or `EXE_LHU_OP : begin \
-                    `INIT(mem_addr) \
-                    `UPDATE(`LOAD_INIT_STATUS, 0, 0) \
+                    `START(`LOAD_INIT_STATUS, mem_addr, 0, 0) \
                 end \
                 `EXE_SB_OP or `EXE_SH_OP or `EXE_SW_OP : begin \
-                    `INIT(mem_addr) \
-                    `UPDATE(`STORE_INIT_STATUS, 0, 1) \
+                    `START(`STORE_INIT_STATUS, mem_addr, 1, rt_data) \
                 end \
                 default : begin \
-                    `INIT(if_raddr) \
-                    `UPDATE(`IF_INIT_STATUS, 0, 0) \
+                    `START(`IF_INIT_STATUS, if_addr, 0, 0) \
                 end \
             endcase \
-        end else if (_redirect_status == `MEM_DONE_STATUS && !if_cancel) begin \
-            `INIT(if_raddr) \
-            `UPDATE(`IF_INIT_STATUS, 0, 0) \
-        end else if (_redirect_status == `IF_CANCEL_STATUS || _redirect_status == `IF_DONE_STATUS) begin \
-            `UPDATE(0, 0, 0) \
-        else \
-            `UPDATE(0, 0, 0)
+        end else if (_redirect_status == `LOAD_STORE_DONE_STATUS && !if_cancel) begin \
+            `START(`IF_INIT_STATUS, if_addr, 0, 0) \
+        end else begin \
+            `RESET() \
+        end
 
     always @ (posedge clk) begin
         if (rst) begin
-            `UPDATE(0, 0, 0)
+            `RESET()
         end else begin
             if (status == `INIT_STATUS) begin
-                `REDIRECT(`INIT_STATUS)
+                `REDIRECT(`START_STATUS)
             end else if (status[5] == 0 && if_cancel) begin
                 `REDIRECT(`IF_CANCEL_STATUS)
             end else if (status[4] == 0) begin // READ
-                case (status[3 : 0])
-                    `READ_STATUS_1 : begin
-                        `UPDATE(status + 1, 0, 0)
+                if (status[3 : 0] == `READ_STATUS_8) begin
+                    rdata_o[31 : 24] <= rdata;
+                    if (!status[5]) begin
+                        `REDIRECT(`IF_DONE_STATUS)
+                    end else begin
+                        `REDIRECT(`LOAD_STORE_DONE_STATUS)
                     end
-                    `READ_STATUS_2: begin
-                        `PROCEED()
-                        `UPDATE(status + 1, 0, 0)
-                        `DATA_EXTRACT([7 : 0], rdata)
-                    end
-                    `READ_STATUS_3 : begin
-                        `UPDATE(status + 1, 0, 0)
-                    end
-                    `READ_STATUS_4: begin
-                        `PROCEED()
-                        `UPDATE(status + 1, 0, 0)
-                        `DATA_EXTRACT([15 : 8], rdata)
-                    end
-                    `READ_STATUS_5 : begin
-                        `UPDATE(status + 1, 0, 0)
-                    end
-                    `READ_STATUS_6 : begin
-                        `PROCEED()
-                        `UPDATE(status + 1, 0, 0)
-                        `DATA_EXTRACT([23 : 16], rdata)
-                    end
-                    `READ_STATUS_7 : begin
-                        `UPDATE(status + 1, 0, 0)
-                    end
-                    `READ_STATUS_8 : begin
-                        `DATA_EXTRACT([31 : 24], rdata)
-                        if (!status[5]) begin
-                            `REDIRECT(`IF_DONE_STATUS)
-                        end else begin
-                            `REDIRECT(`LOAD_DONE_STATUS)
+                end else begin
+                    status <= status + 1;
+                    case (status[3 : 0])
+                        `READ_STATUS_2: begin
+                            rdata_o[7 : 0] <= rdata;
+                            if (status[5] && (mem_aluop == `EXE_LB_OP || mem_aluop == `EXE_LBU_OP)) begin
+                                `REDIRECT(`LOAD_STORE_DONE_STATUS)
+                            end else begin
+                                addr <= addr + 1;
+                            end
                         end
-                    end
-                    default : begin
-                    end
-                endcase
+                        `READ_STATUS_4: begin
+                            rdata_o[15 : 8] <= rdata;
+                            if (status[5] && (mem_aluop == `EXE_LH_OP || mem_aluop == `EXE_LHU_OP)) begin
+                                `REDIRECT(`LOAD_STORE_DONE_STATUS)
+                            end else begin
+                                addr <= addr + 1;
+                            end
+                        end
+                        `READ_STATUS_6 : begin
+                            rdata_o[23 : 16] <= rdata;
+                            addr <= addr + 1;
+                        end
+                        default : begin
+                        end
+                    endcase
+                end
             end else begin // WRITE
+                `REDIRECT(`LOAD_STORE_DONE_STATUS)
             end
         end
     end

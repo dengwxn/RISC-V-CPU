@@ -152,4 +152,27 @@
 `define AluSelBus	7:0
 `define AluOpBus	2:0
 
+// MEMORY CONTROLLER
+`define INIT_STATUS			6'b000000
+`define IF_INIT_STATUS 		6'b000001
+`define LOAD_INIT_STATUS 	6'b100001
+`define STORE_INIT_STATUS 	6'b110001
+
+`define START_STATUS				0
+`define IF_CANCEL_STATUS			1
+`define IF_DONE_STATUS				2
+`define LOAD_STORE_DONE_STATUS		3
+
+`define READ_STATUS_1		  4'b0001
+`define READ_STATUS_2		  4'b0010
+`define READ_STATUS_3		  4'b0011
+`define READ_STATUS_4		  4'b0100
+`define READ_STATUS_5		  4'b0101
+`define READ_STATUS_6		  4'b0110
+`define READ_STATUS_7		  4'b0111
+`define READ_STATUS_8		  4'b1000
+
+`define WRITE_STATUS_1		  4'b0001
+`define WRITE_STATUS_2		  4'b0010
+
 `endif

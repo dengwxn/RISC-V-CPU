@@ -20,7 +20,7 @@ module mem (
     output  wire[`DataAddrBus]  mem_addr_o,
     output  wire[`AluOpBus]     mem_aluop_o,
     output  wire[`RegBus]       rt_data_o,
-    input   wire                mem_mem_ctrl_done,
+    input   wire                load_store_mem_ctrl_done,
     input   wire[`DataBus]      rdata
 );
 
@@ -29,7 +29,7 @@ module mem (
     assign rt_data_o = rt_data_i;
 
     `define UPDATE_LOAD(_wdata_o) \
-        if (mem_mem_ctrl_done) begin \
+        if (load_store_mem_ctrl_done) begin \
             wdata_o = _wdata_o; \
             mem_stallreq = 0; \
         end else begin \
@@ -38,7 +38,7 @@ module mem (
         end
 
     `define UPDATE_STORE()
-        if (mem_mem_ctrl_done) begin
+        if (load_store_mem_ctrl_done) begin
             mem_stallreq = 0;
         end else begin
             mem_stallreq = 1;
