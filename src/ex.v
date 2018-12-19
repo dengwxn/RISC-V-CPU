@@ -9,14 +9,14 @@ module ex (
     input   wire[`RegAddrBus]   waddr_i,
     input   wire                we_i,
 
-    input   wire[`InstAddrBus]  link_addr,
-
     output  reg[`RegAddrBus]    waddr_o,
     output  reg                 we_o,
     output  reg[`RegBus]        wdata,
 
+    input   wire[`InstAddrBus]  link_addr,
     input   wire[`RegBus]       mem_offset,
-    output  reg[`MemAddrBus]    mem_addr,
+
+    output  reg[`DataAddrBus]   mem_addr,
     output  wire[`AluOpBus]     mem_aluop,
     output  wire[`RegBus]       rt_data
 );

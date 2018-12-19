@@ -8,25 +8,27 @@ module pc_reg (
     output  reg                 ce,
 
     input   wire                br,
-    input   wire[`InstAddrBus]  br_addr
+    input   wire[`InstAddrBus]  br_addr,
+
+    input   wire                rdy
 );
 
-    always @ (posedge clk) begin
-        if (rst) begin
-            ce <= 0;
-        end else begin
-            ce <= 1;
-		end
-    end
+    reg[`InstAddrBus]   pc_tmp;
 
     always @ (posedge clk) begin
-        if (rst) begin
+        if (rst || !rdy) begin // assume rdy == 0 only happens in the beginning
+            ce <= 0;
             pc <= 0;
-        end if (!stall[0]) begin
+            pc_tmp <= 0;
+        end else if (!stall[0]) begin
+            $display("pc 1: %h %h", rst, rdy);
+            ce <= 1;
             if (br) begin
                 pc <= br_addr;
+                pc_tmp <= br_addr + 4;
             end else begin
-                pc <= pc + 4;
+                pc <= pc_tmp;
+                pc_tmp <= pc + 4;
             end
         end
     end

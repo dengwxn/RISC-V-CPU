@@ -11,7 +11,7 @@ module mem (
     output  reg                 we_o,
     output  reg[`RegBus]        wdata_o,
 
-    input   wire[`MemAddrBus]   mem_addr_i,
+    input   wire[`DataAddrBus]  mem_addr_i,
     input   wire[`AluOpBus]     mem_aluop_i,
     input   wire[`RegBus]       rt_data_i,
 
@@ -37,11 +37,11 @@ module mem (
             mem_stallreq = 1; \
         end
 
-    `define UPDATE_STORE()
-        if (load_store_mem_ctrl_done) begin
-            mem_stallreq = 0;
-        end else begin
-            mem_stallreq = 1;
+    `define UPDATE_STORE \
+        if (load_store_mem_ctrl_done) begin \
+            mem_stallreq = 0; \
+        end else begin \
+            mem_stallreq = 1; \
         end
 
     always @ (*) begin
@@ -64,13 +64,13 @@ module mem (
                     `UPDATE_LOAD(rdata)
                 end
                 `EXE_LBU_OP : begin
-                    `UPDATE_LOAD({{24{0}, rdata[7 : 0]})
+                    `UPDATE_LOAD({{24{1'b0}}, rdata[7 : 0]})
                 end
                 `EXE_LHU_OP : begin
-                    `UPDATE_LOAD({{16{0}}, rdata[15 : 0]})
+                    `UPDATE_LOAD({{16{1'b0}}, rdata[15 : 0]})
                 end
-                `EXE_SB_OP or `EXE_SH_OP or `EXE_SW_OP : begin
-                    `UPDATE_STORE()
+                `EXE_SB_OP, `EXE_SH_OP, `EXE_SW_OP : begin
+                    `UPDATE_STORE
                 end
                 default : begin
                 end

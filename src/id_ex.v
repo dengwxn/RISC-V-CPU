@@ -10,13 +10,17 @@ module id_ex (
     input   wire[`RegBus]       id_opv2,
     input   wire[`RegAddrBus]   id_waddr,
     input   wire                id_we,
+	input   wire[`InstAddrBus]	id_link_addr,
+	input   wire[`RegBus]		id_mem_offset,
 
     output  reg[`AluSelBus]     ex_alusel,
     output  reg[`AluOpBus]      ex_aluop,
     output  reg[`RegBus]        ex_opv1,
     output  reg[`RegBus]        ex_opv2,
     output  reg[`RegAddrBus]    ex_waddr,
-    output  reg                 ex_we
+    output  reg                 ex_we,
+	output  reg[`InstAddrBus]	ex_link_addr,
+	output  reg[`RegBus]		ex_mem_offset
 );
 
     always @ (posedge clk) begin

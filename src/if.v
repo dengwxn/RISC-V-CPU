@@ -8,11 +8,11 @@ module stage_if (
     input   wire                ce,
     input   wire[4 : 0]         stall,
 
-    output  reg                 pc_o,
-    output  reg                 inst,
+    output  reg[`InstAddrBus]   pc_o,
+    output  reg[`InstBus]       inst,
     output  reg                 if_stallreq,
 
-    output  wire                raddr,
+    output  wire[`InstAddrBus]  raddr,
     input   wire                if_mem_ctrl_done,
     input   wire[`InstBus]      rdata,
 

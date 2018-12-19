@@ -58,6 +58,7 @@ module id (
     reg instvalid;
 
     wire[31 : 0] pc_plus_J_imm;
+    wire[31 : 0] pc_plus_B_imm;
     wire[31 : 0] rdata1_plus_I_imm;
     wire[31 : 0] pc_plus_4;
 

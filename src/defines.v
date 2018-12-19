@@ -12,7 +12,7 @@
 `define OP_JALR		7'b1100111 
 `define OP_BRANCH	7'b1100011
 `define OP_LOAD		7'b0000011
-`define OP_SOTRE	7'b0100011
+`define OP_STORE	7'b0100011
 
 /*
   	Instruction funct3
@@ -142,6 +142,8 @@
 `define DataMemNum      131072
 `define DataMemNumLog2  17
 
+`define InstDataBus		31:0
+
 // Register File
 `define RegAddrBus  4:0
 `define RegBus      31:0
@@ -171,6 +173,15 @@
 `define READ_STATUS_6		  4'b0110
 `define READ_STATUS_7		  4'b0111
 `define READ_STATUS_8		  4'b1000
+
+`define WRITE_STATUS_1		  4'b0001
+`define WRITE_STATUS_2		  4'b0010
+`define WRITE_STATUS_3		  4'b0011
+`define WRITE_STATUS_4		  4'b0100
+`define WRITE_STATUS_5		  4'b0101
+`define WRITE_STATUS_6		  4'b0110
+`define WRITE_STATUS_7		  4'b0111
+`define WRITE_STATUS_8		  4'b1000
 
 `define WRITE_STATUS_1		  4'b0001
 `define WRITE_STATUS_2		  4'b0010

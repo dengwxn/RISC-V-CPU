@@ -11,10 +11,10 @@ module if_id (
 );
 
     always @ (posedge clk) begin
-        if (rst || br) begin
+        if (rst) begin
             id_pc <= 0;
             id_inst <= 0;
-        end else begin
+        end else if (!br) begin
             id_pc <= if_pc;
             id_inst <= if_inst;
         end
