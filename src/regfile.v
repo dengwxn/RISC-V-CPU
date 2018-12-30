@@ -20,10 +20,8 @@ module regfile (
     reg[`RegBus] regs[0 : `RegNum - 1];
 
     always @ (posedge clk) begin
-        if (rst) begin
-            if (we && waddr != 0) begin
-                regs[waddr] <= wdata;
-            end
+        if (!rst && we && waddr != 0) begin
+            regs[waddr] <= wdata;
         end
     end
 

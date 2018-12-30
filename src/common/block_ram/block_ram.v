@@ -90,7 +90,17 @@ initial begin
   for (i=0;i<2**ADDR_WIDTH;i=i+1) begin
     ram[i] = 0;
   end
-  $readmemh("lvalue2.data", ram); // add test.data to vivado project or specify a valid file path
+  //$readmemh("inst.data", ram); 
+  //$readmemh("lvalue2.data", ram); 
+  //$readmemh("manyarguments.data", ram); 
+  //$readmemh("expr.data", ram); 
+  //$readmemh("basicopt1.data", ram); // 11e6 ns 
+  //$readmemh("gcd.data", ram); 
+  //$readmemh("multiarray.data", ram); 
+
+  //$readmemh("magic.data", ram); 
+  //$readmemh("queens.data", ram); 
+  $readmemh("bulgarian.data", ram); 
 end
 
 endmodule

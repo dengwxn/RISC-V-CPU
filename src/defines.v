@@ -142,8 +142,6 @@
 `define DataMemNum      131072
 `define DataMemNumLog2  17
 
-`define InstDataBus		31:0
-
 // Register File
 `define RegAddrBus  4:0
 `define RegBus      31:0
@@ -151,19 +149,20 @@
 `define RegNumLog2  5
 
 // ALU
-`define AluSelBus	7:0
-`define AluOpBus	2:0
+`define AluSelBus	2:0
+`define AluOpBus	4:0
 
 // MEMORY CONTROLLER
 `define INIT_STATUS			6'b000000
 `define IF_INIT_STATUS 		6'b000001
 `define LOAD_INIT_STATUS 	6'b100001
 `define STORE_INIT_STATUS 	6'b110001
+`define RELEASE_STATUS 		6'b111111
 
-`define START_STATUS				0
-`define IF_CANCEL_STATUS			1
-`define IF_DONE_STATUS				2
-`define LOAD_STORE_DONE_STATUS		3
+`define START_REDIRECT				0
+`define IF_DONE_REDIRECT			1
+`define LOAD_STORE_DONE_REDIRECT	2
+`define BOTH_DONE_REDIRECT			3
 
 `define READ_STATUS_1		  4'b0001
 `define READ_STATUS_2		  4'b0010
@@ -173,6 +172,7 @@
 `define READ_STATUS_6		  4'b0110
 `define READ_STATUS_7		  4'b0111
 `define READ_STATUS_8		  4'b1000
+`define READ_STATUS_9		  4'b1001
 
 `define WRITE_STATUS_1		  4'b0001
 `define WRITE_STATUS_2		  4'b0010

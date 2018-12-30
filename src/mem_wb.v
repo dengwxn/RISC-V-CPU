@@ -10,7 +10,9 @@ module mem_wb (
 
     output  reg[`RegAddrBus]    wb_waddr,
     output  reg                 wb_we,
-    output  reg[`RegBus]        wb_wdata
+    output  reg[`RegBus]        wb_wdata,
+
+    input   wire[4 : 0]         stall
 );
 
     always @ (posedge clk) begin
@@ -18,7 +20,7 @@ module mem_wb (
             wb_waddr <= 0;
             wb_we <= 0;
             wb_wdata <= 0;
-        end else begin
+        end else if (!stall[4]) begin
             wb_waddr <= mem_waddr;
             wb_we <= mem_we;
             wb_wdata <= mem_wdata;

@@ -11,7 +11,7 @@ module ctrl (
         end else if (mem_stallreq) begin
             stall = 5'b01111;
         end else if (if_stallreq) begin
-            stall = 5'b00011;
+            stall = 5'b00001;
         end else begin
             stall = 5'b00000;
         end

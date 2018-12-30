@@ -6,7 +6,6 @@ module stage_if (
 
     input   wire[`InstAddrBus]  pc_i,
     input   wire                ce,
-    input   wire[4 : 0]         stall,
 
     output  reg[`InstAddrBus]   pc_o,
     output  reg[`InstBus]       inst,
@@ -24,7 +23,7 @@ module stage_if (
 
     always @ (*) begin
         cancel = 0;
-        if (rst) begin
+        if (rst || !ce) begin
             pc_o = 0;
             inst = 0;
             if_stallreq = 0;

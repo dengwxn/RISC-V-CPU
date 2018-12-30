@@ -112,7 +112,7 @@ module id (
                     `SET_BRANCH(1, pc_plus_J_imm, pc_plus_4)
                 end
                 `OP_JALR : begin
-                    `SET_INST(`EXE_RES_BRANCH, `EXE_JALR_OP, 1, 0, 0, 0, 0, 0, 0, 1, rd, 0)
+                    `SET_INST(`EXE_RES_BRANCH, `EXE_JALR_OP, 1, 1, rs, 0, 0, 0, 0, 1, rd, 0)
                     `SET_BRANCH(1, rdata1_plus_I_imm, pc_plus_4)
                 end
                 `OP_BRANCH : begin
@@ -231,6 +231,9 @@ module id (
                                 default : begin
                                 end
                             endcase
+                        end
+                        `FUNCT3_SLL : begin
+                            `SET_INST(`EXE_RES_SHIFT, `EXE_SLL_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd, 0)
                         end
                         `FUNCT3_SLT : begin
                             `SET_INST(`EXE_RES_ARITH, `EXE_SLT_OP, 1, 1, rs, 1, rt, 0, 0, 1, rd, 0)

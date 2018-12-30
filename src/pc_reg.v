@@ -15,20 +15,21 @@ module pc_reg (
 
     reg[`InstAddrBus]   pc_tmp;
 
+    // why pc and pc_tmp not increase 4 properly ???
+
     always @ (posedge clk) begin
         if (rst || !rdy) begin // assume rdy == 0 only happens in the beginning
             ce <= 0;
             pc <= 0;
             pc_tmp <= 0;
         end else if (!stall[0]) begin
-            $display("pc 1: %h %h", rst, rdy);
             ce <= 1;
             if (br) begin
                 pc <= br_addr;
                 pc_tmp <= br_addr + 4;
             end else begin
                 pc <= pc_tmp;
-                pc_tmp <= pc + 4;
+                pc_tmp <= pc_tmp + 4;
             end
         end
     end

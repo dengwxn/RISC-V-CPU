@@ -18,7 +18,9 @@ module ex_mem (
 
     output  reg[`DataAddrBus]   mem_mem_addr,
     output  reg[`AluOpBus]      mem_mem_aluop,
-    output  reg[`RegBus]        mem_rt_data
+    output  reg[`RegBus]        mem_rt_data,
+
+    input   wire[4 : 0]         stall
 );
 
     always @ (posedge clk) begin
@@ -29,7 +31,7 @@ module ex_mem (
             mem_mem_addr <= 0;
             mem_mem_aluop <= 0;
             mem_rt_data <= 0;
-        end else begin
+        end else if (!stall[3]) begin
             mem_waddr <= ex_waddr;
             mem_we <= ex_we;
             mem_wdata <= ex_wdata;

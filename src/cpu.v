@@ -99,7 +99,8 @@ module cpu(
 	wire[`RegBus]		mem_rt_data_o;
 
 	// MEM_CTRL -- *
-	wire[`InstDataBus]	mem_ctrl_rdata_o; // Inst and Data share the same size bus here
+	wire[`InstBus]	mem_ctrl_if_rdata_o; 
+	wire[`DataBus]	mem_ctrl_load_store_rdata_o; 
 	wire				if_mem_ctrl_done;
 	wire				load_store_mem_ctrl_done;
 
@@ -109,7 +110,7 @@ module cpu(
 		.rst(rst_in),
 
 		.if_raddr(if_raddr),
-		.rdata_o(mem_ctrl_rdata_o),
+		.if_rdata_o(mem_ctrl_if_rdata_o),
 		.if_mem_ctrl_done(if_mem_ctrl_done),
 
 		.mem_ctrl_wr(mem_wr),
@@ -122,7 +123,11 @@ module cpu(
 		.mem_addr(mem_mem_addr_o),
 		.mem_aluop(mem_mem_aluop_o),
 		.rt_data(mem_rt_data_o),
-		.load_store_mem_ctrl_done(load_store_mem_ctrl_done)
+		.load_store_mem_ctrl_done(load_store_mem_ctrl_done),
+		.load_store_rdata_o(mem_ctrl_load_store_rdata_o),
+
+		.if_request(if_stallreq),
+		.load_store_request(mem_stallreq)
 	);
 
 	// stall
@@ -155,7 +160,6 @@ module cpu(
 
 		.pc_i(if_pc_i),
 		.ce(if_ce),
-		.stall(stall),
 
 		.pc_o(if_pc_o),
 		.inst(if_inst),
@@ -163,7 +167,7 @@ module cpu(
 
 		.raddr(if_raddr),
 		.if_mem_ctrl_done(if_mem_ctrl_done),
-		.rdata(mem_ctrl_rdata_o),
+		.rdata(mem_ctrl_if_rdata_o),
 
 		.br(br),
 		.cancel(if_cancel)
@@ -180,7 +184,9 @@ module cpu(
 		.id_pc(id_pc),
 		.id_inst(id_inst),
 
-		.br(br)
+		.br(br),
+
+		.stall(stall)
 	);
 
 	// ID
@@ -256,7 +262,9 @@ module cpu(
 		.ex_waddr(ex_waddr_i),
 		.ex_we(ex_we_i),
 		.ex_link_addr(ex_link_addr_i),
-		.ex_mem_offset(ex_mem_offset_i)
+		.ex_mem_offset(ex_mem_offset_i),
+
+		.stall(stall)
 	);
 
 	// EX
@@ -294,9 +302,15 @@ module cpu(
 		.mem_we(mem_we_i),
 		.mem_wdata(mem_wdata_i),
 
+		.ex_mem_addr(ex_mem_addr),
+		.ex_mem_aluop(ex_mem_aluop),
+		.ex_rt_data(ex_rt_data),
+
 		.mem_mem_addr(mem_mem_addr_i),
 		.mem_mem_aluop(mem_mem_aluop_i),
-		.mem_rt_data(mem_rt_data_i)
+		.mem_rt_data(mem_rt_data_i),
+
+		.stall(stall)
 	);
 
 	// MEM
@@ -321,7 +335,7 @@ module cpu(
 		.mem_aluop_o(mem_mem_aluop_o),
 		.rt_data_o(mem_rt_data_o),
 		.load_store_mem_ctrl_done(load_store_mem_ctrl_done),
-		.rdata(mem_ctrl_rdata_o)
+		.rdata(mem_ctrl_load_store_rdata_o)
 	);
 
 	// MEM/WB
@@ -335,7 +349,9 @@ module cpu(
 
 		.wb_waddr(wb_waddr),
 		.wb_we(wb_we),
-		.wb_wdata(wb_wdata)
+		.wb_wdata(wb_wdata),
+
+		.stall(stall)
 	);
 
 	// implementation goes here

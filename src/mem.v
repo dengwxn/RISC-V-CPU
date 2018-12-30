@@ -29,15 +29,21 @@ module mem (
     assign rt_data_o = rt_data_i;
 
     `define UPDATE_LOAD(_wdata_o) \
+        waddr_o = waddr_i; \
         if (load_store_mem_ctrl_done) begin \
+            we_o = we_i; \
             wdata_o = _wdata_o; \
             mem_stallreq = 0; \
         end else begin \
+            we_o = 0; \
             wdata_o = 0; \
             mem_stallreq = 1; \
         end
 
     `define UPDATE_STORE \
+        waddr_o = 0; \
+        we_o = 0; \
+        wdata_o = 0; \
         if (load_store_mem_ctrl_done) begin \
             mem_stallreq = 0; \
         end else begin \
@@ -49,10 +55,8 @@ module mem (
             waddr_o = 0;
             we_o = 0;
             wdata_o = 0;
+            mem_stallreq = 0;
         end else begin
-            waddr_o = waddr_i;
-            we_o = we_i;
-            wdata_o = wdata_i;
             case (mem_aluop_i)
                 `EXE_LB_OP : begin
                     `UPDATE_LOAD({{24{rdata[7]}}, rdata[7 : 0]})
@@ -73,6 +77,10 @@ module mem (
                     `UPDATE_STORE
                 end
                 default : begin
+                    waddr_o = waddr_i;
+                    we_o = we_i;
+                    wdata_o = wdata_i;
+                    mem_stallreq = 0;
                 end
             endcase
         end

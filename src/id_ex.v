@@ -20,7 +20,9 @@ module id_ex (
     output  reg[`RegAddrBus]    ex_waddr,
     output  reg                 ex_we,
 	output  reg[`InstAddrBus]	ex_link_addr,
-	output  reg[`RegBus]		ex_mem_offset
+	output  reg[`RegBus]		ex_mem_offset,
+
+    input   wire[4 : 0]         stall
 );
 
     always @ (posedge clk) begin
@@ -31,14 +33,18 @@ module id_ex (
             ex_opv2 <= 0;
             ex_waddr <= 0;
             ex_we <= 0;
-        end else begin
+            ex_link_addr <= 0;
+            ex_mem_offset <= 0;
+        end else if (!stall[2]) begin
             ex_alusel <= id_alusel;
             ex_aluop <= id_aluop;
             ex_opv1 <= id_opv1;
             ex_opv2 <= id_opv2;
             ex_waddr <= id_waddr;
             ex_we <= id_we;
-        end
+            ex_link_addr <= id_link_addr;
+            ex_mem_offset <= id_mem_offset;
+       end
     end
 
 endmodule
