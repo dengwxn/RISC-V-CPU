@@ -99,8 +99,8 @@ module cpu(
 	wire[`RegBus]		mem_rt_data_o;
 
 	// MEM_CTRL -- *
-	wire[`InstBus]	mem_ctrl_if_rdata_o; 
-	wire[`DataBus]	mem_ctrl_load_store_rdata_o; 
+	wire[`InstBus]		mem_ctrl_if_rdata_o; 
+	wire[`DataBus]		mem_ctrl_load_store_rdata_o; 
 	wire				if_mem_ctrl_done;
 	wire				load_store_mem_ctrl_done;
 

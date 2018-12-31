@@ -94,13 +94,14 @@ initial begin
   //$readmemh("lvalue2.data", ram); 
   //$readmemh("manyarguments.data", ram); 
   //$readmemh("expr.data", ram); 
-  //$readmemh("basicopt1.data", ram); // 11e6 ns 
+  //$readmemh("basicopt1.data", ram); 
   //$readmemh("gcd.data", ram); 
-  //$readmemh("multiarray.data", ram); 
+  $readmemh("multiarray.data", ram); 
 
   //$readmemh("magic.data", ram); 
   //$readmemh("queens.data", ram); 
-  $readmemh("bulgarian.data", ram); 
+  //$readmemh("bulgarian.data", ram); 
+  //$readmemh("pi.data", ram); 
 end
 
 endmodule

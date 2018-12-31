@@ -15,10 +15,8 @@ module pc_reg (
 
     reg[`InstAddrBus]   pc_tmp;
 
-    // why pc and pc_tmp not increase 4 properly ???
-
     always @ (posedge clk) begin
-        if (rst || !rdy) begin // assume rdy == 0 only happens in the beginning
+        if (rst || !rdy) begin
             ce <= 0;
             pc <= 0;
             pc_tmp <= 0;
