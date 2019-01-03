@@ -96,7 +96,7 @@ initial begin
   //$readmemh("expr.data", ram); 
   //$readmemh("basicopt1.data", ram); 
   //$readmemh("gcd.data", ram); 
-  $readmemh("multiarray.data", ram); 
+  //$readmemh("multiarray.data", ram); 
 
   //$readmemh("magic.data", ram); 
   //$readmemh("queens.data", ram); 

@@ -74,6 +74,9 @@ module mem_ctrl (
     always @ (posedge clk) begin
         if (rst) begin
             status <= `INIT_STATUS;
+            addr <= 0; 
+            mem_ctrl_wr <= 0;
+            wdata <= 0;
             if_mem_ctrl_done <= 0; 
             load_store_mem_ctrl_done <= 0; 
             if_cancel_ever <= 0;
